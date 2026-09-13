@@ -34,3 +34,9 @@ export default function Marketplace() {
               <p className="text-brand-500 font-bold text-sm mt-1">{p.price.toLocaleString()} FCFA</p>
               <p className="text-[10px] text-gray-400">Stock : {p.stock}</p>
               <button onClick={() => addToCart(p)} className="mt-2 w-full bg-brand-500 text-white text-xs rounded-full py-2 font-medium">
+                Ajouter au panier
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
