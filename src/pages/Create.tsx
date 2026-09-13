@@ -21,14 +21,14 @@ export default function Create() {
   };
 
   return (
-    <div className="p-4">
-      <div className="border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl p-8 flex flex-col items-center gap-2 mb-4">
+    <div className="h-full overflow-y-auto p-4 pb-8">
+      <div className="border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-2xl p-8 flex flex-col items-center gap-2 mb-4">
         <Video size={32} className="text-brand-500" />
         <p className="text-sm text-center text-gray-500">Sélectionner une vidéo depuis votre téléphone (simulation)</p>
         <button className="text-xs bg-brand-500 text-white px-4 py-2 rounded-full">Choisir un fichier</button>
       </div>
 
-      <div className="border border-gray-200 dark:border-gray-800 rounded-xl p-3 flex items-center gap-2 mb-3">
+      <div className="border border-gray-200 dark:border-gray-800 rounded-2xl p-3 flex items-center gap-2 mb-3">
         <Image size={18} className="text-gray-400" />
         <span className="text-sm text-gray-500">Image de couverture (simulation)</span>
       </div>
@@ -37,16 +37,16 @@ export default function Create() {
         value={description}
         onChange={e => setDescription(e.target.value)}
         placeholder="Décrivez votre vidéo..."
-        className="w-full bg-gray-100 dark:bg-gray-800 rounded-xl p-3 text-sm mb-3"
+        className="w-full bg-gray-100 dark:bg-gray-800 rounded-2xl p-3 text-sm mb-3"
         rows={3}
       />
       <input
         value={hashtags}
         onChange={e => setHashtags(e.target.value)}
         placeholder="#hashtags séparés par des espaces"
-        className="w-full bg-gray-100 dark:bg-gray-800 rounded-xl p-3 text-sm mb-3"
+        className="w-full bg-gray-100 dark:bg-gray-800 rounded-2xl p-3 text-sm mb-3"
       />
-      <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-xl p-3 mb-3">
+      <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-2xl p-3 mb-3">
         <Music size={18} className="text-gray-400" />
         <input
           value={music}
@@ -55,7 +55,7 @@ export default function Create() {
           className="bg-transparent outline-none text-sm w-full"
         />
       </div>
-      <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-xl p-3 mb-5">
+      <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-2xl p-3 mb-5">
         <ShoppingBag size={18} className="text-gray-400" />
         <select value={productId} onChange={e => setProductId(e.target.value)} className="bg-transparent outline-none text-sm w-full">
           <option value="">Associer un produit (optionnel)</option>
@@ -65,7 +65,7 @@ export default function Create() {
 
       <button
         onClick={handlePublish}
-        className="w-full bg-brand-500 text-white rounded-full py-3 font-semibold flex items-center justify-center gap-2"
+        className="w-full bg-brand-500 text-white rounded-2xl py-3.5 font-semibold flex items-center justify-center gap-2 shadow-sm shadow-brand-500/20"
       >
         <Send size={18} /> {published ? 'Publication...' : 'Publier'}
       </button>
