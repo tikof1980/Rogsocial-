@@ -15,8 +15,8 @@ export default function Discover() {
   );
 
   return (
-    <div className="p-4">
-      <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-full px-3 py-2 mb-4">
+    <div className="h-full overflow-y-auto p-4 pb-8">
+      <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-full px-4 py-2.5 mb-4">
         <Search size={18} className="text-gray-400" />
         <input
           value={query}
@@ -29,7 +29,7 @@ export default function Discover() {
       <h3 className="font-semibold mb-2">Hashtags tendances</h3>
       <div className="flex flex-wrap gap-2 mb-5">
         {trendingHashtags.map(h => (
-          <span key={h} className="text-xs bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">#{h}</span>
+          <span key={h} className="text-xs bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-full">#{h}</span>
         ))}
       </div>
 
@@ -50,19 +50,4 @@ export default function Discover() {
         </>
       )}
 
-      <h3 className="font-semibold mb-2">Vidéos à explorer</h3>
-      <div className="grid grid-cols-3 gap-1">
-        {videos.map(v => (
-          <img key={v.id} src={v.cover} className="w-full h-32 object-cover rounded" />
-        ))}
-      </div>
-
-      <button
-        onClick={() => setTab('marketplace')}
-        className="mt-6 w-full bg-brand-500 text-white rounded-full py-3 font-semibold"
-      >
-        🛒 Explorer la Marketplace
-      </button>
-    </div>
-  );
-}
+      <h3 className="font-semibold mb-2">Vidéos à explor
