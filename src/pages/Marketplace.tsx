@@ -11,7 +11,7 @@ export default function Marketplace() {
   return (
     <div className="relative h-full overflow-y-auto p-4 pb-8">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="font-bold text-lg">Boutiques & produits</h2>
+        <h2 className="font-bold text-lg">Boutiques et produits</h2>
         <button onClick={() => setShowCart(true)}>
           <div className="relative">
             <ShoppingCart size={22} />
@@ -40,3 +40,58 @@ export default function Marketplace() {
           </div>
         ))}
       </div>
+
+      {showCart && (
+        <div className="fixed inset-0 max-w-md mx-auto bg-black/50 z-40 flex items-end">
+          <div className="bg-white dark:bg-gray-900 w-full rounded-t-2xl p-4 max-h-[80vh] overflow-y-auto pb-8">
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="font-semibold">Mon panier</h3>
+              <button onClick={() => setShowCart(false)}>
+                <X size={20} />
+              </button>
+            </div>
+
+            {cart.length === 0 && (
+              <p className="text-sm text-gray-500">Votre panier est vide.</p>
+            )}
+
+            {cart.length > 0 && (
+              <div>
+                {cart.map(c => (
+                  <div key={c.product.id} className="flex items-center gap-3 mb-3">
+                    <img src={c.product.image} className="w-14 h-14 rounded-lg object-cover" />
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold">{c.product.name}</p>
+                      <p className="text-xs text-gray-500">Quantité : {c.quantity}</p>
+                      <p className="text-brand-500 text-sm font-bold">
+                        {(c.product.price * c.quantity).toLocaleString()} FCFA
+                      </p>
+                    </div>
+                    <button onClick={() => removeFromCart(c.product.id)} className="text-xs text-gray-400">
+                      Retirer
+                    </button>
+                  </div>
+                ))}
+
+                <div className="flex justify-between font-semibold mb-3 pt-2 border-t border-gray-200 dark:border-gray-800">
+                  <span>Total</span>
+                  <span>{total.toLocaleString()} FCFA</span>
+                </div>
+
+                <button
+                  onClick={() => {
+                    cart.forEach(c => placeOrder(c.product, c.quantity));
+                    setShowCart(false);
+                  }}
+                  className="w-full bg-brand-500 text-white rounded-full py-3 font-semibold"
+                >
+                  Valider la commande
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
