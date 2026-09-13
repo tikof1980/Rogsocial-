@@ -15,19 +15,19 @@ const titles: Record<string, string> = {
 export default function TopBar() {
   const { tab, theme, toggleTheme, setTab } = useApp();
   return (
-    <div className="sticky top-0 z-20 flex items-center justify-between px-4 py-3 bg-white/90 dark:bg-black/90 backdrop-blur border-b border-gray-200 dark:border-gray-800">
-      <h1 className="font-bold text-lg">{titles[tab] || 'RogSocial'}</h1>
-      <div className="flex items-center gap-3">
+    <div className="flex-shrink-0 flex items-center justify-between px-4 pt-[max(0.75rem,env(safe-area-inset-top))] pb-3 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 z-20">
+      <h1 className="font-bold text-lg tracking-tight">{titles[tab] || 'RogSocial'}</h1>
+      <div className="flex items-center gap-1">
         {tab !== 'roger' && (
-          <button onClick={() => setTab('roger')} aria-label="Roger AI">
-            <Bot size={20} className="text-brand-500" />
+          <button onClick={() => setTab('roger')} aria-label="Roger AI" className="p-2 rounded-full active:bg-gray-100 dark:active:bg-gray-900">
+            <Bot size={19} className="text-brand-500" />
           </button>
         )}
-        <button onClick={() => setTab('discover')} aria-label="Rechercher">
-          <Search size={20} />
+        <button onClick={() => setTab('discover')} aria-label="Rechercher" className="p-2 rounded-full active:bg-gray-100 dark:active:bg-gray-900">
+          <Search size={19} />
         </button>
-        <button onClick={toggleTheme} aria-label="Changer de thème">
-          {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+        <button onClick={toggleTheme} aria-label="Changer de thème" className="p-2 rounded-full active:bg-gray-100 dark:active:bg-gray-900">
+          {theme === 'dark' ? <Sun size={19} /> : <Moon size={19} />}
         </button>
       </div>
     </div>
