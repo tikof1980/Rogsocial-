@@ -11,12 +11,12 @@ export default function Profile() {
   const myVideos = videos.filter(v => v.userId === profile.id);
 
   return (
-    <div className="p-4">
+    <div className="h-full overflow-y-auto p-4 pb-8">
       {viewingProfileId && !isMe && (
         <button onClick={() => setViewingProfileId(null)} className="text-sm text-brand-500 mb-3">← Retour</button>
       )}
       <div className="flex flex-col items-center text-center">
-        <img src={profile.avatar} className="w-20 h-20 rounded-full mb-2" />
+        <img src={profile.avatar} className="w-20 h-20 rounded-full mb-2 ring-2 ring-brand-500/30" />
         <h2 className="font-bold text-lg">{profile.displayName} {profile.verified && '✅'}</h2>
         <p className="text-sm text-gray-500">@{profile.username}</p>
         <p className="text-sm mt-2 px-6">{profile.bio}</p>
@@ -30,20 +30,20 @@ export default function Profile() {
         <div className="flex gap-2 mt-4 w-full">
           {isMe ? (
             <>
-              <button onClick={() => setTab('dashboard')} className="flex-1 bg-brand-500 text-white rounded-full py-2 text-sm font-semibold">
+              <button onClick={() => setTab('dashboard')} className="flex-1 bg-brand-500 text-white rounded-full py-2.5 text-sm font-semibold shadow-sm shadow-brand-500/20">
                 Tableau de bord
               </button>
-              <button className="border border-gray-300 dark:border-gray-700 rounded-full p-2"><Settings size={18} /></button>
+              <button className="border border-gray-300 dark:border-gray-700 rounded-full p-2.5"><Settings size={18} /></button>
             </>
           ) : (
             <>
               <button
                 onClick={() => toggleFollow(profile.id)}
-                className={`flex-1 rounded-full py-2 text-sm font-semibold ${following ? 'border border-gray-300 dark:border-gray-700' : 'bg-brand-500 text-white'}`}
+                className={`flex-1 rounded-full py-2.5 text-sm font-semibold ${following ? 'border border-gray-300 dark:border-gray-700' : 'bg-brand-500 text-white shadow-sm shadow-brand-500/20'}`}
               >
                 {following ? 'Abonné(e)' : 'Suivre'}
               </button>
-              <button onClick={() => setTab('messages')} className="flex-1 border border-gray-300 dark:border-gray-700 rounded-full py-2 text-sm font-semibold">
+              <button onClick={() => setTab('messages')} className="flex-1 border border-gray-300 dark:border-gray-700 rounded-full py-2.5 text-sm font-semibold">
                 Message
               </button>
             </>
@@ -62,7 +62,7 @@ export default function Profile() {
         <button className="flex-1 flex justify-center py-2 text-gray-400"><Heart size={20} /></button>
       </div>
       <div className="grid grid-cols-3 gap-1 mt-1">
-        {myVideos.map(v => <img key={v.id} src={v.cover} className="w-full h-32 object-cover" />)}
+        {myVideos.map(v => <img key={v.id} src={v.cover} className="w-full h-32 object-cover rounded-sm" />)}
         {myVideos.length === 0 && <p className="col-span-3 text-center text-sm text-gray-500 py-6">Aucune vidéo</p>}
       </div>
     </div>
