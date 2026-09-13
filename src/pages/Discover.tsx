@@ -29,14 +29,16 @@ export default function Discover() {
       <h3 className="font-semibold mb-2">Hashtags tendances</h3>
       <div className="flex flex-wrap gap-2 mb-5">
         {trendingHashtags.map(h => (
-          <span key={h} className="text-xs bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-full">#{h}</span>
+          <span key={h} className="text-xs bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-full">
+            #{h}
+          </span>
         ))}
       </div>
 
       {query && (
-        <>
+        <div className="mb-5">
           <h3 className="font-semibold mb-2">Comptes</h3>
-          <div className="space-y-3 mb-5">
+          <div className="space-y-3">
             {filteredUsers.map(u => (
               <button key={u.id} onClick={() => setViewingProfileId(u.id)} className="flex items-center gap-3 w-full">
                 <img src={u.avatar} className="w-10 h-10 rounded-full" />
@@ -47,7 +49,22 @@ export default function Discover() {
               </button>
             ))}
           </div>
-        </>
+        </div>
       )}
 
-      <h3 className="font-semibold mb-2">Vidéos à explor
+      <h3 className="font-semibold mb-2">Vidéos à explorer</h3>
+      <div className="grid grid-cols-3 gap-1">
+        {videos.map(v => (
+          <img key={v.id} src={v.cover} className="w-full h-32 object-cover rounded-sm" />
+        ))}
+      </div>
+
+      <button
+        onClick={() => setTab('marketplace')}
+        className="mt-6 w-full bg-brand-500 text-white rounded-2xl py-3.5 font-semibold shadow-sm shadow-brand-500/20"
+      >
+        🛒 Explorer la Marketplace
+      </button>
+    </div>
+  );
+}
