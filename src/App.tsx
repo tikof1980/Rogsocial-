@@ -31,12 +31,15 @@ export default function App() {
   };
 
   const showTopBar = tab !== 'feed' && tab !== 'live';
+  const fullBleed = tab === 'feed' || tab === 'live';
 
   return (
     <div className={theme === 'dark' ? 'dark' : ''}>
-      <div className="min-h-screen bg-white text-black dark:bg-black dark:text-white max-w-md mx-auto relative">
+      <div className="h-[100dvh] w-full max-w-md mx-auto flex flex-col bg-white text-black dark:bg-black dark:text-white overflow-hidden relative">
         {showTopBar && <TopBar />}
-        <div className="pb-16">{renderPage()}</div>
+        <div className={`flex-1 min-h-0 overflow-y-auto overscroll-contain ${fullBleed ? '' : 'pb-1'}`}>
+          {renderPage()}
+        </div>
         <BottomNav />
       </div>
     </div>
