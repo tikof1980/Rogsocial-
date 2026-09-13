@@ -32,40 +32,9 @@ export default function RogerAI() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-64px-64px)]">
+    <div className="flex flex-col h-full">
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.map((m, i) => (
           <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'} items-start gap-2`}>
-            {m.role === 'ai' && <Bot size={20} className="text-brand-500 mt-1" />}
-            <div className={`px-3 py-2 rounded-2xl text-sm max-w-[75%] ${m.role === 'user' ? 'bg-brand-500 text-white' : 'bg-gray-100 dark:bg-gray-800'}`}>
-              {m.text}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="flex gap-2 overflow-x-auto px-4 pb-2">
-        {suggestions.map(({ icon: Icon, label }) => (
-          <button
-            key={label}
-            onClick={() => send(label)}
-            className="flex items-center gap-1 text-xs bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded-full whitespace-nowrap"
-          >
-            <Icon size={14} /> {label}
-          </button>
-        ))}
-      </div>
-
-      <div className="flex items-center gap-2 p-3 border-t border-gray-200 dark:border-gray-800">
-        <input
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && send(input)}
-          placeholder="Demandez quelque chose à Roger AI..."
-          className="flex-1 bg-gray-100 dark:bg-gray-800 rounded-full px-4 py-2 text-sm outline-none"
-        />
-        <button onClick={() => send(input)}><Send size={20} className="text-brand-500" /></button>
-      </div>
-    </div>
-  );
-}
+            {m.role === 'ai' && <Bot size={20} className="text-brand-500 mt-1 flex-shrink-0" />}
+            <div className={`px-3 py-2 rounded-2xl text-sm max-w-[75%] ${m.role === 'user' ? 'bg-brand-500 text-whit
