@@ -19,7 +19,9 @@ export default function Dashboard() {
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`flex-1 text-xs py-2 rounded-full font-semibold transition-colors ${tab === t ? 'bg-brand-500 text-white shadow-sm' : 'text-gray-500 dark:text-gray-400'}`}
+            className={`flex-1 text-xs py-2 rounded-full font-semibold transition-colors ${
+              tab === t ? 'bg-brand-500 text-white shadow-sm' : 'text-gray-500 dark:text-gray-400'
+            }`}
           >
             {t === 'creator' ? 'Créateur' : t === 'merchant' ? 'Commerçant' : 'LIVE'}
           </button>
@@ -36,22 +38,29 @@ export default function Dashboard() {
       )}
 
       {tab === 'merchant' && (
-        <>
+        <div>
           <div className="grid grid-cols-2 gap-3 mb-5">
             <Stat label="Commandes" value={orders.length} />
             <Stat label="Revenus (FCFA)" value={revenue.toLocaleString()} />
           </div>
           <h3 className="font-semibold mb-2">Commandes récentes</h3>
           <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
-            {orders.length === 0 && <p className="text-sm text-gray-500 p-4">Aucune commande pour l'instant.</p>}
+            {orders.length === 0 && (
+              <p className="text-sm text-gray-500 p-4">Aucune commande pour l'instant.</p>
+            )}
             {orders.map((o, i) => (
-              <div key={o.id} className={`flex justify-between text-sm px-4 py-3 ${i !== orders.length - 1 ? 'border-b border-gray-100 dark:border-gray-800' : ''}`}>
+              <div
+                key={o.id}
+                className={`flex justify-between text-sm px-4 py-3 ${
+                  i !== orders.length - 1 ? 'border-b border-gray-100 dark:border-gray-800' : ''
+                }`}
+              >
                 <span>{o.productName} × {o.quantity}</span>
                 <span className="text-gray-500">{o.status}</span>
               </div>
             ))}
           </div>
-        </>
+        </div>
       )}
 
       {tab === 'live' && (
@@ -68,5 +77,4 @@ export default function Dashboard() {
   );
 }
 
-function Stat({ label, value }: { label: string; value: number | string }) {
-  return (
+function Stat({ label, value }: { label: string; value: number | string })
