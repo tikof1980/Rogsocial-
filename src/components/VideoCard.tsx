@@ -14,7 +14,7 @@ export default function VideoCard({ video }: { video: VideoItem }) {
   const following = followedUsers.has(video.userId);
 
   return (
-    <div className="relative w-full h-screen snap-start bg-black flex items-center justify-center overflow-hidden">
+    <div className="relative w-full h-full snap-start bg-black flex items-center justify-center overflow-hidden">
       <img src={video.cover} alt="" className="w-full h-full object-cover opacity-80" />
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
 
