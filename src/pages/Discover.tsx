@@ -1,18 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
-import { videos, users } from '../data/mockData';
 import { useApp } from '../context/AppContext';
+import { getFeedVideos, searchProfiles, FeedVideo, RemoteProfile } from '../lib/api';
 
 const trendingHashtags = ['abidjan', 'wax', 'tech', 'dev', 'mode', 'unboxing'];
 
 export default function Discover() {
   const [query, setQuery] = useState('');
+  const [videos, setVideos] = useState<FeedVideo[]>([]);
+  const [profiles, setProfiles] = useState<RemoteProfile[]>([]);
   const { setViewingProfileId, setTab } = useApp();
 
-  const filteredUsers = users.filter(u =>
-    u.username.toLowerCase().includes(query.toLowerCase()) ||
-    u.displayName.toLowerCase().includes(query.toLowerCase())
-  );
+  useEffect(() => {
+    getFeedVideos().then(setVideos);
+  }, []);
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (query.trim()) {
+        searchProfiles(query).then(setProfiles);
+      } else {
+        setProfiles([]);
+      }
+    }, 300);
+    return () => clearTimeout(t);
+  }, [query]);
 
   return (
     <div className="h-full overflow-y-auto p-4 pb-8">
@@ -21,17 +33,15 @@ export default function Discover() {
         <input
           value={query}
           onChange={e => setQuery(e.target.value)}
-          placeholder="Rechercher un compte, un hashtag..."
+          placeholder="Rechercher un compte..."
           className="bg-transparent outline-none text-sm w-full"
         />
       </div>
 
-      <h3 className="font-semibold mb-2">Hashtags tendances</h3>
+      <h3 className="font-semibold mb-2">Hashtags (exemples)</h3>
       <div className="flex flex-wrap gap-2 mb-5">
         {trendingHashtags.map(h => (
-          <span key={h} className="text-xs bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-full">
-            #{h}
-          </span>
+          <span key={h} className="text-xs bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-full">#{h}</span>
         ))}
       </div>
 
@@ -39,12 +49,13 @@ export default function Discover() {
         <div className="mb-5">
           <h3 className="font-semibold mb-2">Comptes</h3>
           <div className="space-y-3">
-            {filteredUsers.map(u => (
-              <button key={u.id} onClick={() => setViewingProfileId(u.id)} className="flex items-center gap-3 w-full">
-                <img src={u.avatar} className="w-10 h-10 rounded-full" />
+            {profiles.length === 0 && <p className="text-sm text-gray-500">Aucun resultat.</p>}
+            {profiles.map(p => (
+              <button key={p.id} onClick={() => setViewingProfileId(p.id)} className="flex items-center gap-3 w-full">
+                <img src={p.avatar} className="w-10 h-10 rounded-full" />
                 <div className="text-left">
-                  <p className="font-semibold text-sm">@{u.username}</p>
-                  <p className="text-xs text-gray-500">{u.followers} abonnés</p>
+                  <p className="font-semibold text-sm">@{p.username}</p>
+                  <p className="text-xs text-gray-500">{p.displayName}</p>
                 </div>
               </button>
             ))}
@@ -52,18 +63,19 @@ export default function Discover() {
         </div>
       )}
 
-      <h3 className="font-semibold mb-2">Vidéos à explorer</h3>
+      <h3 className="font-semibold mb-2">Videos recentes</h3>
       <div className="grid grid-cols-3 gap-1">
         {videos.map(v => (
-          <img key={v.id} src={v.cover} className="w-full h-32 object-cover rounded-sm" />
+          <img key={v.id} src={v.coverUrl || 'https://picsum.photos/seed/' + v.id + '/300/300'} className="w-full h-32 object-cover rounded-sm" />
         ))}
+        {videos.length === 0 && <p className="col-span-3 text-center text-sm text-gray-500 py-6">Aucune video pour l'instant.</p>}
       </div>
 
       <button
         onClick={() => setTab('marketplace')}
         className="mt-6 w-full bg-brand-500 text-white rounded-2xl py-3.5 font-semibold shadow-sm shadow-brand-500/20"
       >
-        🛒 Explorer la Marketplace
+        Explorer la Marketplace
       </button>
     </div>
   );
