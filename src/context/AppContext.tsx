@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { TabKey, CartItem, Product, Order } from '../types';
-import { currentUser } from '../data/mockData';
+import { TabKey, CartItem, Product, Order, AppUser } from '../types';
+import { useAuth } from './AuthContext';
 
 interface AppContextValue {
   theme: 'dark' | 'light';
@@ -18,7 +18,7 @@ interface AppContextValue {
   removeFromCart: (id: string) => void;
   orders: Order[];
   placeOrder: (p: Product, qty: number) => void;
-  user: typeof currentUser;
+  user: AppUser;
   viewingProfileId: string | null;
   setViewingProfileId: (id: string | null) => void;
   viewingLiveId: string | null;
@@ -28,6 +28,7 @@ interface AppContextValue {
 const AppContext = createContext<AppContextValue | null>(null);
 
 export function AppProvider({ children }: { children: ReactNode }) {
+  const { session, profile } = useAuth();
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [tab, setTab] = useState<TabKey>('feed');
   const [likedVideos, setLikedVideos] = useState<Set<string>>(new Set());
@@ -65,6 +66,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
     ]);
   };
 
+  const user: AppUser = {
+    id: session?.user.id || 'u0',
+    username: profile?.username || 'utilisateur',
+    displayName: profile?.display_name || profile?.username || 'Utilisateur',
+    avatar: profile?.avatar_url || 'https://i.pravatar.cc/150?img=12',
+    bio: profile?.bio || '',
+    followers: 0,
+    following: 0,
+    likes: 0,
+    role: 'creator',
+    verified: false
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -83,7 +97,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         removeFromCart,
         orders,
         placeOrder,
-        user: currentUser,
+        user,
         viewingProfileId,
         setViewingProfileId,
         viewingLiveId,
