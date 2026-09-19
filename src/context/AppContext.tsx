@@ -1,6 +1,8 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { TabKey, CartItem, Product, Order, AppUser } from '../types';
 import { useAuth } from './AuthContext';
+import { supabase } from '../lib/supabase';
+import { getProfile } from '../lib/api';
 
 interface AppContextValue {
   theme: 'dark' | 'light';
@@ -8,11 +10,11 @@ interface AppContextValue {
   tab: TabKey;
   setTab: (t: TabKey) => void;
   likedVideos: Set<string>;
-  toggleLike: (id: string) => void;
+  toggleLike: (videoId: string) => void;
   favoritedVideos: Set<string>;
-  toggleFavorite: (id: string) => void;
+  toggleFavorite: (videoId: string) => void;
   followedUsers: Set<string>;
-  toggleFollow: (id: string) => void;
+  toggleFollow: (targetUserId: string) => void;
   cart: CartItem[];
   addToCart: (p: Product) => void;
   removeFromCart: (id: string) => void;
@@ -38,13 +40,75 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [viewingProfileId, setViewingProfileId] = useState<string | null>(null);
   const [viewingLiveId, setViewingLiveId] = useState<string | null>(null);
+  const [followersCount, setFollowersCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
+
+  const userId = session?.user.id;
+
+  useEffect(() => {
+    if (!userId) return;
+    (async () => {
+      const [likesRes, favRes, followRes] = await Promise.all([
+        supabase.from('likes').select('video_id').eq('user_id', userId),
+        supabase.from('favorites').select('video_id').eq('user_id', userId),
+        supabase.from('follows').select('following_id').eq('follower_id', userId)
+      ]);
+      setLikedVideos(new Set((likesRes.data || []).map((r: any) => r.video_id)));
+      setFavoritedVideos(new Set((favRes.data || []).map((r: any) => r.video_id)));
+      setFollowedUsers(new Set((followRes.data || []).map((r: any) => r.following_id)));
+      const p = await getProfile(userId);
+      if (p) {
+        setFollowersCount(p.followersCount);
+        setFollowingCount(p.followingCount);
+      }
+    })();
+  }, [userId]);
 
   const toggleTheme = () => setTheme(t => (t === 'dark' ? 'light' : 'dark'));
 
-  const toggleSet = (set: Set<string>, id: string, setter: (s: Set<string>) => void) => {
-    const next = new Set(set);
-    next.has(id) ? next.delete(id) : next.add(id);
-    setter(next);
+  const toggleLike = (videoId: string) => {
+    if (!userId) return;
+    const wasLiked = likedVideos.has(videoId);
+    setLikedVideos(prev => {
+      const next = new Set(prev);
+      wasLiked ? next.delete(videoId) : next.add(videoId);
+      return next;
+    });
+    if (wasLiked) {
+      supabase.from('likes').delete().eq('video_id', videoId).eq('user_id', userId);
+    } else {
+      supabase.from('likes').insert({ video_id: videoId, user_id: userId });
+    }
+  };
+
+  const toggleFavorite = (videoId: string) => {
+    if (!userId) return;
+    const wasFav = favoritedVideos.has(videoId);
+    setFavoritedVideos(prev => {
+      const next = new Set(prev);
+      wasFav ? next.delete(videoId) : next.add(videoId);
+      return next;
+    });
+    if (wasFav) {
+      supabase.from('favorites').delete().eq('video_id', videoId).eq('user_id', userId);
+    } else {
+      supabase.from('favorites').insert({ video_id: videoId, user_id: userId });
+    }
+  };
+
+  const toggleFollow = (targetUserId: string) => {
+    if (!userId || targetUserId === userId) return;
+    const wasFollowing = followedUsers.has(targetUserId);
+    setFollowedUsers(prev => {
+      const next = new Set(prev);
+      wasFollowing ? next.delete(targetUserId) : next.add(targetUserId);
+      return next;
+    });
+    if (wasFollowing) {
+      supabase.from('follows').delete().eq('follower_id', userId).eq('following_id', targetUserId);
+    } else {
+      supabase.from('follows').insert({ follower_id: userId, following_id: targetUserId });
+    }
   };
 
   const addToCart = (p: Product) => {
@@ -67,13 +131,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
   };
 
   const user: AppUser = {
-    id: session?.user.id || 'u0',
+    id: userId || 'u0',
     username: profile?.username || 'utilisateur',
     displayName: profile?.display_name || profile?.username || 'Utilisateur',
     avatar: profile?.avatar_url || 'https://i.pravatar.cc/150?img=12',
     bio: profile?.bio || '',
-    followers: 0,
-    following: 0,
+    followers: followersCount,
+    following: followingCount,
     likes: 0,
     role: 'creator',
     verified: false
@@ -87,11 +151,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
         tab,
         setTab,
         likedVideos,
-        toggleLike: (id) => toggleSet(likedVideos, id, setLikedVideos),
+        toggleLike,
         favoritedVideos,
-        toggleFavorite: (id) => toggleSet(favoritedVideos, id, setFavoritedVideos),
+        toggleFavorite,
         followedUsers,
-        toggleFollow: (id) => toggleSet(followedUsers, id, setFollowedUsers),
+        toggleFollow,
         cart,
         addToCart,
         removeFromCart,
